@@ -10,3 +10,6 @@ The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-exam
 
 The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-examples/blob/main/lambda-examples.dib)) contains C# code as well as markdown texts and includes different examples of lambda expressions.
 
+## he notebook different-languages
+
+The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-examples/blob/main/different-languages.dib)) contains all of the available language codes (C#, JavaScript, HTML, F#, PowerShell, KQL (Kusto Query Language), and SQL).
