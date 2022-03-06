@@ -1,0 +1,89 @@
+#!markdown
+
+## Lambda Examples in C#
+
+#!csharp
+
+using System.Threading;
+
+#!markdown
+
+### Create Test Data 
+
+#!csharp
+
+class Person
+{
+  public string FirstName {get; set;}
+  public string LastName {get; set;}
+  public int Age {get; set;}
+}
+
+var persons = new List<Person>()
+{
+  new Person()
+  {
+    FirstName = "John",
+    LastName = "Doe",
+    Age = 35
+  },
+  new Person()
+  {
+    FirstName = "Ann",
+    LastName = "Peterson",
+    Age = 30
+  }
+};
+
+#!markdown
+
+### Task Chain
+
+#!csharp
+
+int i=0;
+
+var task = new Task(() =>
+{
+  i++;
+
+  Console.WriteLine($"First task {i}");
+  Thread.Sleep(2000);
+});
+
+Task continuation = task.ContinueWith(t =>
+{
+  i++;
+  Console.WriteLine($"Continue first task 1 {i}");
+  Thread.Sleep(2000);
+});
+
+task.RunSynchronously();
+
+#!markdown
+
+### Lambda with Linq
+
+#!csharp
+
+int minAge = persons.Min(x=>x.Age);
+var youngestPerson = persons
+                .Where(x => x.Age == minAge)
+                .Select(x=>x.FirstName+" "+x.LastName)
+                .First();
+
+Console.WriteLine($"Youngest person is {youngestPerson}");
+
+#!markdown
+
+### Extract an Array from Object Property Values
+
+#!csharp
+
+string[] firstNames = persons
+    .Where(x => x.FirstName != null)
+    .Select(x => x.FirstName)
+    .ToArray();
+
+foreach (var firstName in firstNames) 
+  Console.WriteLine($"First name: {firstName}");
