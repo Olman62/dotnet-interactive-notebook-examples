@@ -1,0 +1,115 @@
+#!markdown
+
+## C# Code Example
+
+#!csharp
+
+int a = 10;
+int b= 20;
+Console.WriteLine($"a*b={a*b}");
+
+#!markdown
+
+## Javascript Code Example
+
+#!javascript
+
+var a = 10;
+var b = 20;
+console.log(`a*b=${a*b}`);
+
+#!markdown
+
+## HTML Code Example
+
+#!html
+
+<div>
+  <ul>
+  <li>Berlin</li>
+  <li>London</li>
+  <li>Paris</li>
+  </ul>
+</div>
+
+#!markdown
+
+## F# Code Example
+
+#!fsharp
+
+// The code calculates the sum of the cubes of the numbers 1..n.
+
+let cube x = x * x * x
+
+let sumOfCubes n =
+   [1..n] |> List.map cube |> List.sum
+
+sumOfCubes 10
+
+#!markdown
+
+## PowerShell Example
+
+#!pwsh
+
+# The following code will give first four items from the list
+
+$myList = 5.6, 4.5, 3.3, 13.2, 4.0, 34.33, 34.0, 45.45, 99.993, 11123
+
+write-host("using while Loop")
+$i = 0
+while($i -lt 4) {
+   $myList[$i];
+   $i++
+}
+
+#!markdown
+
+## Kusto Query Language Examples
+
+#!csharp
+
+// Install KQL extension VS Code
+#r "nuget:Microsoft.DotNet.Interactive.Kql,*-*"
+
+#!csharp
+
+// Connect to a Microsoft Kusto Server database.
+#!connect kql --kernel-name mydatabase --cluster "https://help.kusto.windows.net" --database "Samples"
+
+#!csharp
+
+// send KQL statements
+#!kql-mydatabase
+tableName | take 10
+
+#!kql
+
+// Count the frequency of each duration:
+| summarize count() by duration=bin(min_duration/1s, 10) 
+// Cut off the long tail:
+| where duration < 300
+// Display in a bar chart:
+| sort by duration asc | render barchart 
+
+#!markdown
+
+## SQL Code example
+
+#!sql
+
+/* The code demonstrates how to create datatable, insert data in it and retrieve data from it.
+
+CREATE TABLE STATION
+(ID INTEGER PRIMARY KEY,
+CITY CHAR(20),
+STATE CHAR(2),
+LAT_N REAL,
+LONG_W REAL);
+
+INSERT INTO STATION VALUES (13, 'Phoenix', 'AZ', 33, 112);
+INSERT INTO STATION VALUES (44, 'Denver', 'CO', 40, 105);
+INSERT INTO STATION VALUES (66, 'Caribou', 'ME', 47, 68);
+
+SELECT * FROM STATION;
