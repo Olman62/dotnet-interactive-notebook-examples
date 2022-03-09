@@ -10,7 +10,7 @@ Console.WriteLine($"a*b={a*b}");
 
 #!markdown
 
-## Javascript Code Example
+## JavaScript Code Example
 
 #!javascript
 
@@ -113,3 +113,21 @@ INSERT INTO STATION VALUES (44, 'Denver', 'CO', 40, 105);
 INSERT INTO STATION VALUES (66, 'Caribou', 'ME', 47, 68);
 
 SELECT * FROM STATION;
+
+#!markdown
+
+## Share Variabes Between Several Languages
+
+#!csharp
+
+var hi = "hello";
+
+#!javascript
+
+#!share --from csharp hi
+
+(async () => {
+  let output = document.getElementById("output");
+})();
+
+console.log(hi);
