@@ -1,14 +1,20 @@
 #!markdown
 
 ## Lambda Examples in C#
+Run this code cell to import all the necessary libraries required for the examples provided in the notebook.
 
 #!csharp
 
 using System.Threading;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
 
 #!markdown
 
-### Create Test Data 
+### Create Test Data
+The test data is created for examples provided in this notebook.
 
 #!csharp
 
@@ -16,6 +22,12 @@ class Person
 {
   public string FirstName {get; set;}
   public string LastName {get; set;}
+
+  public string FullName
+  {
+    get { return FirstName+" "+LastName; }
+  }
+  
   public int Age {get; set;}
 }
 
@@ -25,7 +37,7 @@ var persons = new List<Person>()
   {
     FirstName = "John",
     LastName = "Doe",
-    Age = 35
+    Age = 35 
   },
   new Person()
   {
@@ -38,6 +50,7 @@ var persons = new List<Person>()
 #!markdown
 
 ### Task Chain
+The example shows the use of lambda expressions in multiple tasks. The second task is a continuation of the first task.
 
 #!csharp
 
@@ -63,6 +76,7 @@ task.RunSynchronously();
 #!markdown
 
 ### Lambda with Linq
+The example demonstrates the use of the lambda and linq expression combinations.
 
 #!csharp
 
@@ -77,6 +91,7 @@ Console.WriteLine($"Youngest person is {youngestPerson}");
 #!markdown
 
 ### Extract an Array from Object Property Values
+The code below shows an example of extracting an array from an object's property values using a lambda expression.
 
 #!csharp
 
@@ -87,3 +102,104 @@ string[] firstNames = persons
 
 foreach (var firstName in firstNames) 
   Console.WriteLine($"First name: {firstName}");
+
+#!markdown
+
+### Lambda Expression With Iteration
+The example demonstrates how to iterate an array using a lambda expression.
+
+#!csharp
+
+persons.ForEach(person =>
+{
+  Console.WriteLine($"Full name: {person.FullName}");
+  Console.WriteLine("");
+});
+
+#!markdown
+
+### Extract Array with Converted Type
+The code below extracts an array from the object property by converting it to another type.
+
+#!csharp
+
+var ages = persons.Select(item => item.Age.ToString()).ToList();
+
+ages.ForEach(age =>
+  {
+    Console.WriteLine($"Age: {age}");
+  })
+
+#!markdown
+
+### Lambda Expression with Delegate
+
+
+The example demonstrates how to find the maximum of the 3 numbers using lambda expression and delegate.
+
+#!csharp
+
+delegate int max3(int data1,int data2, int data3);
+
+max3 m3 = (x, y ,z) =>  (x > y == true) 
+? (x > z == true) 
+	? x : z 
+: (y> z == true)
+    ? y:z;
+
+Console.WriteLine(m3(180,192,354));
+
+#!markdown
+
+### Lambda Expressions, Regex and Statistical Functions
+The example demonstrates how to calculate a number of the sentences in a text, average sentence length (in words), and the number of the substrings contained in the text ('you', 'You', 'your', 'your').
+
+#!csharp
+
+string text = @"Don't you wish you could bring your furry best friend with 
+you everywhere you go? It just doesn't make sense to take our pets with 
+us all the time, and it's so tough to leave them at home. 
+Mary asked, How could you do that mom!? You left him ALONE? For 2 HOURS?";
+
+var sentences = text.Split(
+  new[] {'.', '!', '?'}, 
+  StringSplitOptions.RemoveEmptyEntries);
+
+var regexPattern = new Regex("[Yy]ou[r]*");
+
+double avgLength = sentences.Average(
+  x => x.Split(new []{' '}, 
+  StringSplitOptions.RemoveEmptyEntries)
+  .Length);
+
+int sentenceCount = sentences.Length;
+
+var yous = sentences.Where(
+  x => regexPattern.IsMatch(x)).Sum( s1 => regexPattern.Matches(s1).Count);
+
+Console.WriteLine($"Total sentences: {sentenceCount}");
+Console.WriteLine($"Average sentence length: {avgLength}");
+Console.WriteLine($"Found appealls: {yous}");
+
+#!markdown
+
+### Convert Array to Comma-Separated String Using Lambda Expression
+The code below converts an array to a string with a comma-separated list.
+
+#!csharp
+
+string[] WorldCities = {  
+    "London",
+    "New York City",
+    "Tokyo",
+    "Paris",
+    "Singapore",
+    "Amsterdam",
+    "Berlin",
+    "Seoul"
+};
+
+// Convert an array to a comma-separated list-string.
+var csString = WorldCities.Aggregate((c1, c2) => c1 + ", " + c2);
+
+Console.WriteLine("Comma-separated list: " + csString);
