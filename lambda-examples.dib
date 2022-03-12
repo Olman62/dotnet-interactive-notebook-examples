@@ -22,6 +22,7 @@ class Person
 {
   public string FirstName {get; set;}
   public string LastName {get; set;}
+  public string Gender {get; set;}
 
   public string FullName
   {
@@ -37,15 +38,63 @@ var persons = new List<Person>()
   {
     FirstName = "John",
     LastName = "Doe",
+    Gender = "male",
     Age = 35 
   },
   new Person()
   {
     FirstName = "Ann",
     LastName = "Peterson",
+    Gender = "female",
     Age = 30
   }
 };
+
+#!markdown
+
+### Functions With Lambda Expressions
+Delegate with lambda expression:
+
+#!csharp
+
+Func<Person, string> fnGender = (p) => { 
+	return p.Gender;
+};
+
+Console.WriteLine(
+	$"Ann is {fnGender(persons.Where(x=>x.FirstName=="Ann").First())}"
+	);
+
+#!markdown
+
+And delegate turned into a local function:
+
+#!csharp
+
+string fnGender(Person p)
+{
+  return p.Gender;
+}
+
+Console.WriteLine(
+	$"John is {fnGender(persons.Where(x=>x.FirstName=="John").First())}"
+	);
+
+#!markdown
+
+### Actions With Lambda Expressions
+In contrast to the Func delegate, an Action delegate may contain only input arguments. When no value is required to be returned from a lambda expression, use the Action delegate type.
+
+#!csharp
+
+Action<Person> PrintPersonDetails = s => Console.WriteLine(
+    $"First name: {s.FirstName}, "+ 
+    $"Last name: {s.LastName}, " +
+    $"Gender: {s.Gender}, " +
+    $"Gender: {s.Age}"
+  );
+
+PrintPersonDetails(persons[1]);
 
 #!markdown
 
@@ -87,6 +136,24 @@ var youngestPerson = persons
                 .First();
 
 Console.WriteLine($"Youngest person is {youngestPerson}");
+
+#!markdown
+
+### Create Anonymous Type Object List
+Create a new object (anonymous type) list with French property names:
+
+#!csharp
+
+var personnes = persons.Select(
+  x => new {
+    Prénom = x.FirstName,
+    NomDeFamille = x.LastName,
+    Âge = x.Age,
+    LeSexe = x.Gender
+  }
+);
+
+Console.WriteLine(personnes.ToArray()[0]);
 
 #!markdown
 
@@ -133,7 +200,6 @@ ages.ForEach(age =>
 #!markdown
 
 ### Lambda Expression with Delegate
-
 
 The example demonstrates how to find the maximum of the 3 numbers using lambda expression and delegate.
 
