@@ -10,7 +10,8 @@ The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-exam
 
 ## The notebook lambda-examples
 
-The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-examples/blob/main/lambda-examples.dib)) contains C# code as well as markdown texts and includes different examples of lambda expressions.
+The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-examples/blob/main/lambda-examples.dib)) contains C# code as well as markdown texts and includes different examples of lambda expressions.  
+To learn more about these examples, follow the [link](https://www.expknow.com/lambda-expressions/).
 
 ## The notebook different-languages
 
