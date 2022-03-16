@@ -91,7 +91,7 @@ Action<Person> PrintPersonDetails = s => Console.WriteLine(
     $"First name: {s.FirstName}, "+ 
     $"Last name: {s.LastName}, " +
     $"Gender: {s.Gender}, " +
-    $"Gender: {s.Age}"
+    $"Age: {s.Age}"
   );
 
 PrintPersonDetails(persons[1]);
