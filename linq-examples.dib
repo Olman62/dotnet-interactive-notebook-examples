@@ -1,0 +1,272 @@
+#!markdown
+
+## Linq Examples in C#
+Run this code cell to import all the necessary libraries required for the examples provided in the notebook.
+
+#!csharp
+
+using System.Threading;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+
+#!markdown
+
+### Create Test Data
+The test data is created for examples provided in this notebook.
+
+#!csharp
+
+class Person
+{
+  public string FirstName {get; set;}
+  public string LastName {get; set;}
+  public string Gender {get; set;}
+
+  public string[] Skills {get; set; }
+
+  public Person(string firstName, string lastName, string gender, int age, string[] skills = null)
+  {
+    FirstName = firstName;
+    LastName = lastName;
+    Gender = gender;
+    Age = age;
+    Skills = skills ?? new string[]{};
+  }
+
+  public string FullName
+  {
+    get { return FirstName+" "+LastName; }
+  }
+  
+  public int Age {get; set;}
+}
+
+var persons = new List<Person>()
+{
+  new Person("John", "Doe", "male", 35, new string[] {"c#", "php", "javascript"}),
+  new Person("Ann", "Peterson", "female", 30, new string[] {"photoshop", "painting", "video"}),
+  new Person("Corey", "Barker", "male", 28, new string[] {"ArcGis", "QGIS", "javascript"}),
+  new Person("Debra", "Varner", "female", 47, new string[] {"python", "php", "ai"}),
+  new Person("Eric", "Davis", "male", 64, new string[] {"java", "c#", "ruby"}),
+  new Person("Eileen", "Murillo", "female", 19, new string[] {"QA", "net", "video"}),
+  new Person("Jason", "Wilson", "male", 38, new string[] {"c#", "node", "python"})
+};
+
+Action<Person> PrintPersonDetails = s => Console.WriteLine(
+  $"First name: {s.FirstName}, "+ 
+  $"Last name: {s.LastName}, " +
+  $"Gender: {s.Gender}, " +
+  $"Age: {s.Age}, "+
+  "Skils: "+ String.Join(',',s.Skills)
+);
+
+Action<Person[]> PrintPersonArray = prs => { foreach (var p in prs) PrintPersonDetails(p); };
+
+#!markdown
+
+## Some Illustrative Linq Examples in C#
+
+#!markdown
+
+### Filtering, Ordering, and Selecting Data
+The code below shows how to filter order data and select from it the specified properties.
+
+#!csharp
+
+var youngFullNames = persons.Where(p => p.Age < 36)
+    .OrderByDescending(p => (p.FirstName, p.LastName))
+    .Select(p => p.FullName);
+
+Console.WriteLine(youngFullNames.ToArray()[1]);
+
+#!markdown
+
+### Filtering With Index
+How to get the data with the index in a list? See the solution below.
+
+#!csharp
+
+var from2to4 = persons
+              .Where((p, index) => (index>=2 && index<=4))
+              .Select((p, index) => p);
+
+PrintPersonArray(from2to4.ToArray());
+
+#!markdown
+
+### Using Partitioning Operators
+#### Take Method
+The Take method first N elements from a  sequence 
+
+#!csharp
+
+var first4 = persons.Take(4);
+
+PrintPersonArray(first4.ToArray());
+
+#!markdown
+
+#### Skip Method
+The skip method gets elements after first N element:
+
+#!csharp
+
+var after4 = persons.Skip(4);
+
+PrintPersonArray(after4.ToArray());
+
+#!markdown
+
+#### TakeWhile Method
+Returns elements from a specified sequence while a specified condition is true.  
+> **Note**: the algorithm works until first discovering false, and the rest of the elements will be not checked for the condition.
+
+#!csharp
+
+var from3to5 = persons.TakeWhile((p, index) =>index>5);
+
+PrintPersonArray(from3to5.ToArray());
+
+#!markdown
+
+#### SkipWhile Method
+The elements are skipped in a sequence while a specified condition is true.
+> **Note**: Examine the result and take note that after the first false condition, the algorithm does not skip the rest of the elements with a true condition.
+ 
+
+#!csharp
+
+var firstJava = persons.SkipWhile(p=>!p.Skills.Contains("java"));
+
+PrintPersonArray(firstJava.ToArray());
+
+#!markdown
+
+### Filter Object Array by Type
+The code below demonstrates how to get items of a specific type from an object array.
+
+#!csharp
+
+object[] objectArray = {
+  "star", 
+  persons[1], 
+  "lake", 
+  154.75, 
+  false, 
+  new int[] {1,5,7},
+  persons[4],
+  true
+};
+
+var onlyPersons = objectArray.OfType<Person>();
+
+PrintPersonArray(onlyPersons.ToArray());
+
+#!markdown
+
+### Compound Filtering with Complex Objects
+If you have a list of complex objects and one property is enumerable, then you can use compound filtering in order to filter the list by that property.
+
+#!csharp
+
+var selectedPesrsons = 
+  from p in persons 
+  from skill in p.Skills 
+  where skill=="c#" 
+  select p;
+
+PrintPersonArray(selectedPesrsons.ToArray());
+
+#!markdown
+
+### Grouping
+The example code below shows how to group query results based on a key value.
+
+#!csharp
+
+var genders = from p in persons
+group p by p.Gender into g
+orderby g.Key descending
+where g.Count()>0 
+select new {Gender = g.Key, Count = g.Count()};
+
+foreach (var g in genders)
+  Console.WriteLine($"Gender: {g.Gender}, Count: {g.Count}");
+
+#!markdown
+
+And this example demonstrates how to make grouping with the nested objects.
+
+#!csharp
+
+var genders = from p in persons
+group p by p.Gender into g
+orderby g.Key descending
+where g.Count()>0 
+select new {
+  Gender = g.Key, 
+  Count = g.Count(),
+  fullNames = from r1 in g
+  select r1.FullName
+};
+
+foreach (var g in genders)
+{
+  Console.WriteLine($"Gender: {g.Gender}, Count: {g.Count}");
+  foreach (var fn1 in g.fullNames) 
+    Console.WriteLine($"\t Full name: {fn1}");
+}
+
+#!markdown
+
+### How to Use Methods as Selectors and Filters
+The following example demonstrates how to create a selector by declaring and using a Func<t,TResult> delegate and assigning it a lambda expression. 
+
+#!csharp
+
+Func<Person, string> selector = p => String.Join(',', p.Skills);
+
+var skills = persons.Select(selector);
+
+foreach (var skill in skills) 
+  Console.WriteLine($"Skills: {skill}");
+
+#!markdown
+
+The code below shows how to filter data using a method.
+
+#!csharp
+
+Func<Person, string, Boolean> isGender =  ((person, gender)=>
+{
+    return person.Gender == gender;
+});
+
+var males = persons.Where(p=>isGender(p, "male"));
+
+PrintPersonArray(males.ToArray());
+
+#!markdown
+
+### Using JOIN Clause in LINQ Query
+In the following example, we show how to make two sequences from one and then make a third by joining a common element.
+
+#!csharp
+
+var csharpSkilled = persons
+                    .Where(p=>p.Skills.Contains("c#"))
+                    .Select(p=> new {Name = p.FullName, Skills = p.Skills});
+
+var personAges = persons.Select(p=> new {Name = p.FullName, Age = p.Age});
+
+var csharpSkilledAges = 
+(
+  from s1 in csharpSkilled
+  join a1 in personAges on s1.Name equals a1.Name
+  select new {s1.Name, a1.Age, s1.Skills}
+);
+
+foreach(var cs1 in csharpSkilledAges) 
+  Console.WriteLine($"Name: {cs1.Name}, Age: {cs1.Age}, Skills: {String.Join(',',cs1.Skills)}");
