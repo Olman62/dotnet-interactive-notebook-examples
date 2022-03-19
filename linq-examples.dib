@@ -270,3 +270,65 @@ var csharpSkilledAges =
 
 foreach(var cs1 in csharpSkilledAges) 
   Console.WriteLine($"Name: {cs1.Name}, Age: {cs1.Age}, Skills: {String.Join(',',cs1.Skills)}");
+
+#!markdown
+
+LINQ allows you to perform a JOIN by comparing objects with anonymous types created on the fly:
+> Take note of the variable **numberSkils**, it shows how you can specify variables in a LINQ query.
+
+#!csharp
+
+var csharpSkilled = persons
+                    .Where(p=>p.Skills.Contains("c#"))
+                    .Select(p=> new {FirstName = p.FirstName, LastName = p.LastName, Skills = p.Skills});
+
+var personAges = persons.Select(p=> new {FirstName = p.FirstName, LastName = p.LastName, Age = p.Age});
+
+var csharpSkilledAges = 
+(
+  from s1 in csharpSkilled
+  let numberSkils = s1.Skills.Count()
+  join a1 in personAges on new {s1.FirstName, s1.LastName} equals new {a1.FirstName, a1.LastName}
+  select new {s1.FirstName, s1.LastName, a1.Age, s1.Skills, numberSkils}
+);
+
+foreach(var cs1 in csharpSkilledAges) 
+  Console.WriteLine(
+    $"First name: {cs1.FirstName}, "+
+    $"Last name: {cs1.LastName}, "+
+    $"Age: {cs1.Age}, "+
+    $"Skills: {String.Join(',',cs1.Skills)}, "+
+    $"numberSkils: {cs1.numberSkils}"
+  );
+
+#!markdown
+
+### Type Casting in LINQ Query
+In the previous example, we demonstrated how to select anonymous type objects from an existing object sequence on the fly.
+But consuming the anonymous types during coding is difficult. The following code shows how to cast an anonymous type to a known type:
+
+#!csharp
+
+var anonymoisTypeSequence = persons
+                    .Where(p=>p.Skills.Contains("c#"))
+                    .Select(
+                      p=> new {
+                        FirstName = p.FirstName, 
+                        LastName = p.LastName, 
+                        Gender = p.Gender,
+                        Age = p.Age,
+                        Skills = p.Skills
+                      }
+                    ).ToArray();
+
+var knownTypeSequence = Array.ConvertAll<dynamic, Person>(anonymoisTypeSequence, new Converter<dynamic, Person>(
+  an=> new Person(
+        an.FirstName.ToString(), 
+        an.LastName.ToString(),
+        an.Gender.ToString(), 
+        Convert.ToInt32(an.Age), 
+        an.Skills as string[]
+      )
+));
+
+PrintPersonArray(knownTypeSequence);
