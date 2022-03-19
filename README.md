@@ -15,6 +15,7 @@ To learn more about these examples, follow the [link](https://www.expknow.com/la
 
 ## The notebook "linq-examples"
 The notebook ([link](https://github.com/Olman62/dotnet-interactive-notebook-examples/blob/main/lambda-examples.dib)) contains C# code as well as markdown descriptions and includes different examples of the linq expressions.  
+To learn more about these examples, follow the [link](https://www.expknow.com/linq-examples/).
 
 ## The notebook "different-languages"
 
